@@ -1,0 +1,52 @@
+x-common-volumes: &common_volumes
+  volumes:
+    - ./:/home/bun/app
+    - bun_cache:/bun_cache
+    - /home/bun/app/node_modules
+    - /home/bun/app/packages/frontend/node_modules
+    - /home/bun/app/packages/backend/node_modules
+
+services:
+  dev:
+    <<: *common_volumes
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: echo
+
+  frontend:
+    <<: *common_volumes
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    working_dir: /home/bun/app/packages/frontend
+    command: bun run dev
+    environment:
+      - VITE_BACKEND_HOST=http://localhost:3000
+    ports:
+      - 5173:5173
+
+  backend:
+    <<: *common_volumes
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    working_dir: /home/bun/app/packages/backend
+    command: bun run dev
+    environment:
+      - DATABASE_URL=postgresql://postgres:changeme123@db:5432/app
+    ports:
+      - 3000:3000
+
+  db:
+    image: postgres:17-alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=changeme123
+      - POSTGRES_DB=app
+
+volumes:
+  bun_cache:
+  db_data:
