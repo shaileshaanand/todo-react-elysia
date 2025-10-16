@@ -1,6 +1,11 @@
+import openapi from "@elysiajs/openapi";
 import { Elysia } from "elysia";
+import env from "./utils/env";
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+const app = new Elysia()
+  .use(openapi())
+  .get("/", () => "Hello Elysia")
+  .listen(env.PORT ?? 3000);
 
 // biome-ignore lint/suspicious/noConsole:intentional
 console.log(

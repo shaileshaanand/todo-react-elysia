@@ -31,8 +31,27 @@
     "enabled": true,
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              "!:BUN:",
+              "!:NODE:",
+              "!:ALIAS:",
+              "!:PACKAGE:",
+              "!:PACKAGE_WITH_PROTOCOL:",
+              ":PATH:",
+              ":URL:",
+              { "type": true }
+            ]
+          }
+        }
       }
+    }
+  },
+  "html": {
+    "formatter": {
+      "enabled": true
     }
   }
 }

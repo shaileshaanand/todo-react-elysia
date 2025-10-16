@@ -2,6 +2,13 @@ FROM oven/bun:1.3-alpine
 
 ENV BUN_INSTALL_CACHE_DIR=/bun_cache
 
+RUN apk update &&\
+    apk add --no-cache curl bash python3 make gcc build-base && \
+    sh -c "curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n | bash -s install 22" && \
+    npm i -g node-gyp && \
+    apk del curl bash && \
+    rm -rf /var/cache/apk/*
+
 RUN mkdir /bun_cache && \
     mkdir /home/bun/app/node_modules && \
     mkdir /home/bun/app/packages/frontend/node_modules -p && \
