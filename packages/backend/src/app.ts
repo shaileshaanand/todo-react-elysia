@@ -1,3 +1,4 @@
+import cors from "@elysiajs/cors";
 import openapi from "@elysiajs/openapi";
 import { sql } from "drizzle-orm";
 import { type Context, Elysia } from "elysia";
@@ -6,6 +7,7 @@ import z from "zod";
 import todoController from "./controllers/todoController";
 import db from "./db";
 import { auth } from "./utils/auth";
+import env from "./utils/env";
 
 const betterAuthView = (context: Context) => {
   const BETTER_AUTH_ACCEPT_METHODS = ["POST", "GET"];
@@ -17,6 +19,11 @@ const betterAuthView = (context: Context) => {
 };
 
 const app = new Elysia()
+  .use(
+    cors({
+      origin: env.ALLOWED_CORS_ORIGIN,
+    }),
+  )
   .use(openapi())
   .use(
     logixlysia({

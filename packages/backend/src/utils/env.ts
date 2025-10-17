@@ -5,6 +5,7 @@ const env = z
     DATABASE_URL: z.url(),
     BETTER_AUTH_SECRET: z.string(),
     PORT: z.coerce.number().min(1).max(65535).optional(),
+    ALLOWED_CORS_ORIGIN: z.url(),
   })
   .parse(process.env);
 
