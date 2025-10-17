@@ -1,6 +1,7 @@
 import openapi from "@elysiajs/openapi";
 import { sql } from "drizzle-orm";
 import { type Context, Elysia } from "elysia";
+import logixlysia from "logixlysia";
 import z from "zod";
 import todoController from "./controllers/todoController";
 import db from "./db";
@@ -17,6 +18,18 @@ const betterAuthView = (context: Context) => {
 
 const app = new Elysia()
   .use(openapi())
+  .use(
+    logixlysia({
+      config: {
+        showStartupMessage: true,
+        startupMessageFormat: "simple",
+        timestamp: {
+          translateTime: "dd-mm-yyyy HH:MM:ss",
+        },
+        ip: true,
+      },
+    }),
+  )
   .all("/api/auth/*", betterAuthView)
   .get(
     "/api/healthcheck",
