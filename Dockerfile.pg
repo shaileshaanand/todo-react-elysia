@@ -1,0 +1,35 @@
+# 1. Use the latest official Postgres image
+FROM postgres:18-trixie
+
+# Define a version variable for the Postgres development headers
+ENV PG_VERSION=18
+
+# 2. Install Build Dependencies
+# We need 'git' to clone the repos and 'build-essential' and 'postgresql-server-dev-*' to compile
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    git \
+    make \
+    gcc \
+    ca-certificates \
+    postgresql-server-dev-$PG_VERSION \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. Clone, Build, and Install HypoPG (index_advisor's dependency)
+RUN git clone https://github.com/HypoPG/hypopg.git /tmp/hypopg && \
+    cd /tmp/hypopg && \
+    make && \
+    make install
+
+# 4. Clone, Build, and Install index_advisor
+RUN git clone https://github.com/supabase/index_advisor.git /tmp/index_advisor && \
+    cd /tmp/index_advisor && \
+    make && \
+    make install
+
+# 5. Clean up the source code to reduce image size
+RUN rm -rf /tmp/hypopg /tmp/index_advisor
+
+# 6. Copy the initialization script
+# Scripts in /docker-entrypoint-initdb.d/ are executed when the container starts for the first time.
+COPY ./docker-entrypoint-initdb.d/init-extensions.sql /docker-entrypoint-initdb.d/

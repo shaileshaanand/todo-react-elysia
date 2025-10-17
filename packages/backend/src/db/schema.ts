@@ -1,26 +1,38 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   date,
+  index,
   pgTable,
   text,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
 
-export const todos = pgTable("todos", {
-  id: uuid()
-    .$default(() => sql`uuidv7()`)
-    .primaryKey(),
-  title: text().notNull(),
-  done: boolean().notNull().default(false),
-  dueDate: date(),
-  deletedAt: timestamp(),
-  createdAt: timestamp().defaultNow().notNull(),
-  updatedAt: timestamp()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
+uuid;
+export const todos = pgTable(
+  "todos",
+  {
+    id: uuid().default(sql`uuidv7()`).primaryKey(),
+    title: text().notNull(),
+    done: boolean().notNull().default(false),
+    dueDate: date(),
+    userId: text().notNull(),
+    deletedAt: timestamp(),
+    createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("todo_deletedAt_idx").on(table.deletedAt)],
+);
+
+export const todosRelations = relations(todos, ({ one }) => ({
+  user: one(user, {
+    fields: [todos.userId],
+    references: [user.id],
+  }),
+}));
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
