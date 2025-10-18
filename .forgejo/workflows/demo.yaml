@@ -1,6 +1,6 @@
 on: [push]
 jobs:
   test:
-    runs-on: docker
+    runs-on: docker-cli
     steps:
-      - run: echo All Good
+      - run: docker ps
