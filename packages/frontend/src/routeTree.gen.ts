@@ -10,11 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as Auth_formsRouteImport } from './routes/_auth_forms'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTodosRouteImport } from './routes/_authenticated/todos'
+import { Route as Auth_formsSignupRouteImport } from './routes/_auth_forms/signup'
+import { Route as Auth_formsLoginRouteImport } from './routes/_auth_forms/login'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Auth_formsRoute = Auth_formsRouteImport.update({
+  id: '/_auth_forms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,30 +35,66 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTodosRoute = AuthenticatedTodosRouteImport.update({
+  id: '/todos',
+  path: '/todos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const Auth_formsSignupRoute = Auth_formsSignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => Auth_formsRoute,
+} as any)
+const Auth_formsLoginRoute = Auth_formsLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => Auth_formsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof Auth_formsLoginRoute
+  '/signup': typeof Auth_formsSignupRoute
+  '/todos': typeof AuthenticatedTodosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof Auth_formsLoginRoute
+  '/signup': typeof Auth_formsSignupRoute
+  '/todos': typeof AuthenticatedTodosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth_forms': typeof Auth_formsRouteWithChildren
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
+  '/_auth_forms/login': typeof Auth_formsLoginRoute
+  '/_auth_forms/signup': typeof Auth_formsSignupRoute
+  '/_authenticated/todos': typeof AuthenticatedTodosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/' | '/about' | '/login' | '/signup' | '/todos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/' | '/about' | '/login' | '/signup' | '/todos'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth_forms'
+    | '/_authenticated'
+    | '/about'
+    | '/_auth_forms/login'
+    | '/_auth_forms/signup'
+    | '/_authenticated/todos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  Auth_formsRoute: typeof Auth_formsRouteWithChildren
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
 }
 
@@ -58,6 +107,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth_forms': {
+      id: '/_auth_forms'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof Auth_formsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,11 +128,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/todos': {
+      id: '/_authenticated/todos'
+      path: '/todos'
+      fullPath: '/todos'
+      preLoaderRoute: typeof AuthenticatedTodosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_auth_forms/signup': {
+      id: '/_auth_forms/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof Auth_formsSignupRouteImport
+      parentRoute: typeof Auth_formsRoute
+    }
+    '/_auth_forms/login': {
+      id: '/_auth_forms/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof Auth_formsLoginRouteImport
+      parentRoute: typeof Auth_formsRoute
+    }
   }
 }
 
+interface Auth_formsRouteChildren {
+  Auth_formsLoginRoute: typeof Auth_formsLoginRoute
+  Auth_formsSignupRoute: typeof Auth_formsSignupRoute
+}
+
+const Auth_formsRouteChildren: Auth_formsRouteChildren = {
+  Auth_formsLoginRoute: Auth_formsLoginRoute,
+  Auth_formsSignupRoute: Auth_formsSignupRoute,
+}
+
+const Auth_formsRouteWithChildren = Auth_formsRoute._addFileChildren(
+  Auth_formsRouteChildren,
+)
+
+interface AuthenticatedRouteChildren {
+  AuthenticatedTodosRoute: typeof AuthenticatedTodosRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedTodosRoute: AuthenticatedTodosRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  Auth_formsRoute: Auth_formsRouteWithChildren,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
 }
 export const routeTree = rootRouteImport
