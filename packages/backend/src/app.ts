@@ -1,7 +1,7 @@
 import cors from "@elysiajs/cors";
 import openapi from "@elysiajs/openapi";
 import { sql } from "drizzle-orm";
-import { type Context, Elysia } from "elysia";
+import { type Context, Elysia, ValidationError } from "elysia";
 import logixlysia from "logixlysia";
 import z from "zod";
 import todoController from "./controllers/todoController";
@@ -24,7 +24,13 @@ const app = new Elysia()
       origin: env.ALLOWED_CORS_ORIGIN,
     }),
   )
-  .use(openapi())
+  .use(
+    openapi({
+      mapJsonSchema: {
+        zod: z.toJSONSchema,
+      },
+    }),
+  )
   .use(
     logixlysia({
       config: {
@@ -37,6 +43,20 @@ const app = new Elysia()
       },
     }),
   )
+  .onError(({ error, status }) => {
+    if (error instanceof ValidationError) {
+      return status(400, {
+        message: JSON.parse(error.message)
+          // biome-ignore lint/suspicious/noExplicitAny: error handling
+          .errors.map((err: any) => err.message)
+          .join(", "),
+      });
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: error handling
+    if ((error as any).cause?.errno === "22P02") {
+      return status(404, { message: "Resource not found" });
+    }
+  })
   .all("/api/auth/*", betterAuthView)
   .get(
     "/api/healthcheck",

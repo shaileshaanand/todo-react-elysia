@@ -16,7 +16,7 @@ export const todos = pgTable(
     id: uuid().default(sql`uuidv7()`).primaryKey(),
     title: text().notNull(),
     done: boolean().notNull().default(false),
-    dueDate: date(),
+    dueDate: date({ mode: "date" }),
     userId: text().notNull(),
     deletedAt: timestamp(),
     createdAt: timestamp().defaultNow().notNull(),
