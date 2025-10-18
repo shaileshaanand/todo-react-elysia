@@ -8,6 +8,20 @@
       "when": 1760736348122,
       "tag": "0000_public_salo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760754474738,
+      "tag": "0001_wet_shape",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760754631568,
+      "tag": "0002_last_hiroim",
+      "breakpoints": true
     }
   ]
 }

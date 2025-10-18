@@ -24,7 +24,13 @@ export const todos = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (table) => [index("todo_deletedAt_idx").on(table.deletedAt)],
+  (table) => [
+    index("todo_deletedAt_idx").on(
+      table.deletedAt,
+      table.userId,
+      table.createdAt,
+    ),
+  ],
 );
 
 export const todosRelations = relations(todos, ({ one }) => ({

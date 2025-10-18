@@ -1,11 +1,15 @@
-import { isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import Elysia from "elysia";
 import db from "../db";
 import { todos } from "../db/schema";
+import context from "../utils/context";
 
-const todoController = new Elysia({ prefix: "/api/todo" }).get(
-  "/",
-  async () => {
+const todoController = new Elysia({ prefix: "/api/todo" })
+  .use(context)
+  .guard({
+    auth: true,
+  })
+  .get("/", async ({ user }) => {
     const todosList = await db.query.todos.findMany({
       columns: {
         deletedAt: false,
@@ -13,10 +17,10 @@ const todoController = new Elysia({ prefix: "/api/todo" }).get(
       with: {
         user: true,
       },
-      where: isNull(todos.deletedAt),
+      where: and(isNull(todos.deletedAt), eq(todos.userId, user.id)),
+      orderBy: desc(todos.createdAt),
     });
     return todosList;
-  },
-);
+  });
 
 export default todoController;
