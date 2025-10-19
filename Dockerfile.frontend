@@ -7,7 +7,7 @@ COPY packages/frontend/package.json packages/frontend/package.json
 COPY packages/backend/package.json packages/backend/package.json
 COPY bun.lock bun.lock
 
-RUN bun install
+RUN bun ci
 
 COPY . .
 
