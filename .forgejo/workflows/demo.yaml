@@ -1,6 +1,27 @@
-on: [push]
+on:
+  push:
+    branches:
+      - main
 jobs:
-  test:
-    runs-on: docker-cli
+  build-and-push-backend:
+    runs-on: self-host
     steps:
-      - run: docker ps
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build and push backend Docker image
+        run: |
+          docker buildx build --progress plain --push --no-cache \
+            --file Dockerfile.backend \
+            --tag git.shailesh.live/shailesh/todo-elysia-react-backend:${{ env.FORGEJO_SHA }} \
+            .
+  build-and-push-frontend:
+    runs-on: self-host
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build and push frontend Docker image
+        run: |
+          docker buildx build --progress plain --push --no-cache \
+            --file Dockerfile.frontend \
+            --tag git.shailesh.live/shailesh/todo-elysia-react-frontend:${{ env.FORGEJO_SHA }} \
+            .
