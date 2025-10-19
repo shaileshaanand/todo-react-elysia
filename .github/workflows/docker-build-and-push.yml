@@ -32,7 +32,7 @@ jobs:
           context: .
           file: Dockerfile.backend
           push: true
-          tags: ghcr.io/${{ github.repository }}/todo-react-elysia-backend:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}/todo-react-elysia-backend:${{ github.sha }},ghcr.io/${{ github.repository }}/todo-react-elysia-backend:unstable
           labels: |
             org.opencontainers.image.source=https://github.com/shaileshaanand/todo-react-elysia
             org.opencontainers.image.title=todo-react-elysia-backend
@@ -63,7 +63,7 @@ jobs:
           context: .
           file: Dockerfile.frontend
           push: true
-          tags: ghcr.io/${{ github.repository }}/todo-react-elysia-frontend:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}/todo-react-elysia-frontend:${{ github.sha }},ghcr.io/${{ github.repository }}/todo-react-elysia-frontend:unstable
           labels: |
             org.opencontainers.image.source=https://github.com/shaileshaanand/todo-react-elysia
             org.opencontainers.image.title=todo-react-elysia-frontend
