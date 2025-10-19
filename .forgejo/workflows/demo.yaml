@@ -13,6 +13,7 @@ jobs:
           docker buildx build --progress plain --push --no-cache \
             --file Dockerfile.backend \
             --tag git.shailesh.live/shailesh/todo-elysia-react-backend:${{ env.FORGEJO_SHA }} \
+            --tag git.shailesh.live/shailesh/todo-elysia-react-backend:unstable \
             .
   build-and-push-frontend:
     runs-on: self-host
@@ -24,4 +25,5 @@ jobs:
           docker buildx build --progress plain --push --no-cache \
             --file Dockerfile.frontend \
             --tag git.shailesh.live/shailesh/todo-elysia-react-frontend:${{ env.FORGEJO_SHA }} \
+            --tag git.shailesh.live/shailesh/todo-elysia-react-frontend:unstable \
             .
