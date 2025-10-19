@@ -18,7 +18,7 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   return (
     <div>
-      Hello {session.user.name}!!!
+      Hello {session.user.name}!
       <Button
         onClick={() => {
           authClient.signOut({
